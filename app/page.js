@@ -2,10 +2,12 @@
 
 import './list.scss'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 export default function AppPage(props) {
   const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
+  const router = useRouter()
   const [nowPlayingMovies, setNowPlayingMovies] = useState([])
   const [searchName, setSearchName] = useState('')
   const [searchMovies, setSearchMovies] = useState([])
@@ -57,7 +59,8 @@ export default function AppPage(props) {
         onKeyDown={handleSearch}
       />
       <div className="d-flex">
-        {searchMovies.map((movie) => (
+        {searchMovies?.map((movie) => (
+          //產品卡元件
           <div key={movie.id} className="movie-card">
             <div className="poster position-relative">
               <Image
@@ -72,8 +75,16 @@ export default function AppPage(props) {
         ))}
       </div>
       <div className="d-flex">
-        {nowPlayingMovies.map((movie) => (
-          <div key={movie.id} className="movie-card">
+        {nowPlayingMovies?.map((movie) => (
+          //產品卡元件
+          <div
+            key={movie.id}
+            className="movie-card"
+            onClick={() => {
+              console.log(movie.id)
+              router.push(`/detail/${movie.id}`)
+            }}
+          >
             <div className="poster position-relative">
               <Image
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
