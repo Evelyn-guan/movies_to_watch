@@ -4,6 +4,7 @@ import './list.scss'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function AppPage(props) {
   const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
@@ -48,16 +49,46 @@ export default function AppPage(props) {
 
   return (
     <>
-      <h1>search</h1>
-      <input
-        type="text"
-        placeholder="搜尋電影名稱"
-        // value={searchName}
-        onChange={(e) => {
-          setSearchName(e.target.value)
-        }}
-        onKeyDown={handleSearch}
-      />
+      <nav className="container-fluid px-0">
+        <div className="search-bar row m-0">
+          <div className="col-md-4 col-6 order-1 d-flex align-items-center p-0">
+            <Link href="/">
+              <Image
+                src="/images/blue_long_2.svg"
+                alt="logo"
+                width={200}
+                height={30}
+                // className="object-fit-cover"
+              />
+            </Link>
+          </div>
+          <form
+            className="search-sec col-md-4 col-12 order-md-2 order-3 d-flex align-items-center p-0 mt-2 mt-md-0"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <input
+              type="text"
+              className="search-input w-100"
+              placeholder="搜尋電影名稱"
+              onChange={(e) => {
+                setSearchName(e.target.value)
+              }}
+              onKeyDown={handleSearch}
+            />
+          </form>
+          <div className="col-md-4 col-6 order-md-3 order-2 d-flex justify-content-end align-items-center p-0">
+            <button type="button" className="avatar-sec">
+              <Image
+                className="avatar-img object-fit-cover"
+                src="/images/avatar1.jpg"
+                alt="avatar"
+                width={42}
+                height={42}
+              />
+            </button>
+          </div>
+        </div>
+      </nav>
       <div className="d-flex">
         {searchMovies?.map((movie) => (
           //產品卡元件
