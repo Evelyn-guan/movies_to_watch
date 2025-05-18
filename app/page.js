@@ -2,14 +2,16 @@
 
 import './list.scss'
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+// custom components
+import MovieCard from './_components/movie-card'
+import Carousel from './_components/carousel'
 
-export default function AppPage(props) {
+export default function AppPage() {
   const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
-  const router = useRouter()
   const [nowPlayingMovies, setNowPlayingMovies] = useState([])
+  const [upComingMovies, setUpComingMovies] = useState([])
   const [searchName, setSearchName] = useState('')
   const [searchMovies, setSearchMovies] = useState([])
   const [searchFocused, setSearchFocused] = useState(false)
@@ -22,6 +24,18 @@ export default function AppPage(props) {
       const result = await res.json()
       console.log(result.results)
       setNowPlayingMovies(result.results)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const getUpComingMovies = async () => {
+    try {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=zh-TW&page=1`
+      )
+      const result = await res.json()
+      console.log(result.results)
+      setUpComingMovies(result.results)
     } catch (err) {
       console.log(err)
     }
@@ -46,6 +60,7 @@ export default function AppPage(props) {
 
   useEffect(() => {
     getNowPlayingMovies()
+    getUpComingMovies()
   }, [])
 
   return (
@@ -95,61 +110,19 @@ export default function AppPage(props) {
           } d-flex flex-wrap gap-2`}
         >
           {searchMovies?.map((movie) => (
-            //產品卡元件
-            <div key={movie.id} className="movie-card">
-              <div className="poster position-relative">
-                <Image
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  fill
-                  className="poster-img "
-                />
-              </div>
-              <div className="info p-2">
-                <div>
-                  <h6 className="mb-0">{movie.original_title}</h6>
-                </div>
-                <div>
-                  <p className="mb-0">
-                    上映日期 {movie.release_date?.replace(/-/g, '/')}
-                  </p>
-                </div>
-              </div>
+            <div key={movie.id} className="col-6 col-md-2">
+              <MovieCard data={movie} />
             </div>
           ))}
         </div>
       </nav>
-      <div className="d-flex flex-wrap gap-2">
-        {nowPlayingMovies?.map((movie) => (
-          //產品卡元件
-          <div
-            key={movie.id}
-            className="movie-card"
-            onClick={() => {
-              console.log(movie.id)
-              // router.push(`/detail/${movie.id}`)
-            }}
-          >
-            <div className="poster position-relative">
-              <Image
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-                fill
-                className="poster-img "
-              />
-            </div>
-            <div className="info p-2">
-              <div>
-                <h6 className="mb-0">{movie.original_title}</h6>
-              </div>
-              <div>
-                <p className="mb-0">
-                  上映日期 {movie.release_date?.replace(/-/g, '/')}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="movie-carousel container-fluid mt-5">
+        <h3 className="h4 mb-3">NOW PLAYING MOVIES</h3>
+        <Carousel data={nowPlayingMovies} />
+      </div>
+      <div className="movie-carousel container-fluid mb-5">
+        <h3 className="h4 mb-3">UPCOMING MOVIES</h3>
+        <Carousel data={upComingMovies} />
       </div>
     </>
   )
