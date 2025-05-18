@@ -12,6 +12,7 @@ export default function AppPage(props) {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([])
   const [searchName, setSearchName] = useState('')
   const [searchMovies, setSearchMovies] = useState([])
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const getNowPlayingMovies = async () => {
     try {
@@ -49,7 +50,7 @@ export default function AppPage(props) {
 
   return (
     <>
-      <nav className="container-fluid px-0">
+      <nav className="header container-fluid px-0">
         <div className="search-bar row m-0">
           <div className="col-md-4 col-6 order-1 d-flex align-items-center p-0">
             <Link href="/">
@@ -63,17 +64,17 @@ export default function AppPage(props) {
             </Link>
           </div>
           <form
-            className="search-sec col-md-4 col-12 order-md-2 order-3 d-flex align-items-center p-0 mt-2 mt-md-0"
+            className="search-form col-md-4 col-12 order-md-2 order-3 d-flex align-items-center p-0 mt-2 mt-md-0"
             onSubmit={(e) => e.preventDefault()}
           >
             <input
               type="text"
               className="search-input w-100"
               placeholder="搜尋電影名稱"
-              onChange={(e) => {
-                setSearchName(e.target.value)
-              }}
+              onChange={(e) => setSearchName(e.target.value)}
               onKeyDown={handleSearch}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
             />
           </form>
           <div className="col-md-4 col-6 order-md-3 order-2 d-flex justify-content-end align-items-center p-0">
@@ -88,24 +89,37 @@ export default function AppPage(props) {
             </button>
           </div>
         </div>
-      </nav>
-      <div className="d-flex">
-        {searchMovies?.map((movie) => (
-          //產品卡元件
-          <div key={movie.id} className="movie-card">
-            <div className="poster position-relative">
-              <Image
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-                fill
-                className="object-fit-cover"
-              />
+        <div
+          className={`search-result ${
+            searchFocused ? 'active' : ''
+          } d-flex flex-wrap gap-2`}
+        >
+          {searchMovies?.map((movie) => (
+            //產品卡元件
+            <div key={movie.id} className="movie-card">
+              <div className="poster position-relative">
+                <Image
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                  fill
+                  className="poster-img "
+                />
+              </div>
+              <div className="info p-2">
+                <div>
+                  <h6 className="mb-0">{movie.original_title}</h6>
+                </div>
+                <div>
+                  <p className="mb-0">
+                    上映日期 {movie.release_date?.replace(/-/g, '/')}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>{movie.title}</div>
-          </div>
-        ))}
-      </div>
-      <div className="d-flex">
+          ))}
+        </div>
+      </nav>
+      <div className="d-flex flex-wrap gap-2">
         {nowPlayingMovies?.map((movie) => (
           //產品卡元件
           <div
@@ -113,7 +127,7 @@ export default function AppPage(props) {
             className="movie-card"
             onClick={() => {
               console.log(movie.id)
-              router.push(`/detail/${movie.id}`)
+              // router.push(`/detail/${movie.id}`)
             }}
           >
             <div className="poster position-relative">
@@ -121,10 +135,19 @@ export default function AppPage(props) {
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
                 fill
-                className="object-fit-cover"
+                className="poster-img "
               />
             </div>
-            <div>{movie.title}</div>
+            <div className="info p-2">
+              <div>
+                <h6 className="mb-0">{movie.original_title}</h6>
+              </div>
+              <div>
+                <p className="mb-0">
+                  上映日期 {movie.release_date?.replace(/-/g, '/')}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>
