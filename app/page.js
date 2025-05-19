@@ -1,9 +1,11 @@
 'use client'
 
 import './list.scss'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { debounce } from 'lodash'
+import { ScaleLoader } from 'react-spinners'
 // custom components
 import MovieCard from './_components/movie-card'
 import Carousel from './_components/carousel'
@@ -15,6 +17,8 @@ export default function AppPage() {
   const [searchName, setSearchName] = useState('')
   const [searchMovies, setSearchMovies] = useState([])
   const [searchFocused, setSearchFocused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const getNowPlayingMovies = async () => {
     try {
@@ -40,23 +44,31 @@ export default function AppPage() {
       console.log(err)
     }
   }
-  const getSearchMovie = async (searchName) => {
+  const getSearchMovies = async (searchName) => {
     try {
+      setErrorMessage('')
+
       const res = await fetch(
         `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchName}&include_adult=false&language=zh-TW&page=1`
       )
+
+      if (!res.ok) throw new Error('無法取得搜尋結果，請稍後再試')
       const result = await res.json()
       console.log(result.results)
       setSearchMovies(result.results)
     } catch (err) {
       console.log(err)
+      setErrorMessage(err.message || '發生未知錯誤')
+      setSearchMovies([])
+    } finally {
+      setIsLoading(false)
     }
   }
-  const handleSearch = (e) => {
-    if (e.key === 'Enter') {
-      getSearchMovie(searchName)
-    }
-  }
+  const debounceRef = useRef(
+    debounce((value) => {
+      getSearchMovies(value)
+    }, 500)
+  )
 
   useEffect(() => {
     getNowPlayingMovies()
@@ -86,8 +98,12 @@ export default function AppPage() {
               type="text"
               className="search-input w-100"
               placeholder="搜尋電影名稱"
-              onChange={(e) => setSearchName(e.target.value)}
-              onKeyDown={handleSearch}
+              value={searchName}
+              onChange={(e) => {
+                setSearchName(e.target.value)
+                setIsLoading(true)
+                debounceRef.current(e.target.value)
+              }}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
             />
@@ -104,16 +120,38 @@ export default function AppPage() {
             </button>
           </div>
         </div>
-        <div
-          className={`search-result ${
-            searchFocused ? 'active' : ''
-          } d-flex flex-wrap gap-2`}
-        >
-          {searchMovies?.map((movie) => (
-            <div key={movie.id} className="col-6 col-md-2">
-              <MovieCard data={movie} />
-            </div>
-          ))}
+        <div className={`search-sec ${searchFocused ? 'active' : ''}`}>
+          <div className="search-result">
+            {errorMessage ? (
+              <div className="search-no-result">
+                <h5>{errorMessage}</h5>
+              </div>
+            ) : searchName === '' ? (
+              <div className="search-no-result">
+                <h4>開始尋找想看的電影吧！</h4>
+              </div>
+            ) : isLoading ? (
+              <div className="search-no-result">
+                <ScaleLoader
+                  color="rgba(1, 180, 228, 0.6)"
+                  loading={true}
+                  size={30}
+                />
+              </div>
+            ) : searchMovies.length === 0 ? (
+              <div className="search-no-result">
+                <h4>沒有搜尋到任何電影</h4>
+              </div>
+            ) : (
+              <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-3">
+                {searchMovies?.map((movie) => (
+                  <div key={movie.id} className="col">
+                    <MovieCard data={movie} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
       <div className="movie-carousel container-fluid mt-5">

@@ -12,7 +12,7 @@ export default function MovieCard({ data = {} }) {
       className={`${styles['movie-card']}`}
       onClick={() => {
         console.log(data.id)
-        // router.push(`/detail/${data.id}`)
+        router.push(`/detail/${data.id}`)
       }}
     >
       <div className={`${styles['poster']} position-relative`}>

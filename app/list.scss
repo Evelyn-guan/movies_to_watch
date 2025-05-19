@@ -50,16 +50,36 @@
   }
 }
 
-.search-result {
+.search-sec {
   background-color: var(--grey50);
   height: 0vh;
   box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.6);
-  // z-index: 10;
-  overflow: hidden;
-  transition: height 0.3s ease-in-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: height 0.4s ease-in-out;
+  /* 隱藏滾動條 */
+  /* Firefox */
+  scrollbar-width: none;
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Chrome, Safari, Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &.active {
-    height: 80vh;
+    // 待修改
+    height: calc(100vh - 68px);
+  }
+
+  .search-result {
+    padding: 48px 60px;
+  }
+
+  .search-no-result {
+    color: var(--background-black);
+    text-align: center;
+    padding-top: 64px;
   }
 }
 
