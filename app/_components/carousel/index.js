@@ -12,7 +12,7 @@ import MovieCard from '../movie-card'
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 
-export default function Carousel({ data = {} }) {
+export default function Carousel({ data = {}, setSelectedMovie }) {
   const prevRef = useRef(null)
   const nextRef = useRef(null)
   const [isFirstSlide, setIsFirstSlide] = useState(true)
@@ -53,7 +53,12 @@ export default function Carousel({ data = {} }) {
         >
           {data?.map((movie, i) => (
             <SwiperSlide key={i} className={styles['swiper-slide']}>
-              <MovieCard data={movie} />
+              <MovieCard
+                data={movie}
+                setSelectedMovie={() => {
+                  setSelectedMovie(movie.id)
+                }}
+              />
             </SwiperSlide>
           ))}
         </Swiper>

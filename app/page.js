@@ -9,6 +9,7 @@ import { ScaleLoader } from 'react-spinners'
 // custom components
 import MovieCard from './_components/movie-card'
 import Carousel from './_components/carousel'
+import MovieDetail from './_components/movie-detail'
 
 export default function AppPage() {
   const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
@@ -19,6 +20,8 @@ export default function AppPage() {
   const [searchFocused, setSearchFocused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const [selectedMovie, setSelectedMovie] = useState(null)
 
   const getNowPlayingMovies = async () => {
     try {
@@ -146,7 +149,12 @@ export default function AppPage() {
               <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-3">
                 {searchMovies?.map((movie) => (
                   <div key={movie.id} className="col">
-                    <MovieCard data={movie} />
+                    <MovieCard
+                      data={movie}
+                      setSelectedMovie={() => {
+                        setSelectedMovie(movie.id)
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -156,12 +164,22 @@ export default function AppPage() {
       </nav>
       <div className="movie-carousel container-fluid mt-5">
         <h3 className="h4 mb-3">NOW PLAYING MOVIES</h3>
-        <Carousel data={nowPlayingMovies} />
+        <Carousel data={nowPlayingMovies} setSelectedMovie={setSelectedMovie} />
       </div>
       <div className="movie-carousel container-fluid mb-5">
         <h3 className="h4 mb-3">UPCOMING MOVIES</h3>
-        <Carousel data={upComingMovies} />
+        <Carousel data={upComingMovies} setSelectedMovie={setSelectedMovie} />
       </div>
+      {selectedMovie && (
+        <div
+          className="movie-detail-overlay"
+          onClick={() => setSelectedMovie(null)}
+        >
+          <div className="movie-detail-content">
+            <MovieDetail movieId={selectedMovie} />
+          </div>
+        </div>
+      )}
     </>
   )
 }
