@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import styles from './movie-detail.module.scss'
 import Image from 'next/image'
 
-export default function MovieDetail({ movieId = 0 }) {
+export default function MovieDetail({ movieId = 0, setSelectedMovie }) {
   const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
 
   const [movieDetail, setMovieDetail] = useState({})
@@ -34,8 +34,16 @@ export default function MovieDetail({ movieId = 0 }) {
           backgroundImage: `url(https://image.tmdb.org/t/p/original${movieDetail.backdrop_path})`,
         }}
       >
-        <div className="row w-100 h-100 m-0">
-          <div className="col-5 ps-0">
+        <button
+          className={`${styles['close-icon']}`}
+          onClick={() => {
+            setSelectedMovie(null)
+          }}
+        >
+          <Image src="/images/x.svg" alt="close icon" width={14} height={14} />
+        </button>
+        <div className="row w-100 h-100 g-5 m-0">
+          <div className="col-12 col-sm-5">
             <div className={`${styles['main-image']} position-relative`}>
               <Image
                 src={`https://image.tmdb.org/t/p/original${movieDetail.poster_path}`}
@@ -45,7 +53,7 @@ export default function MovieDetail({ movieId = 0 }) {
               />
             </div>
           </div>
-          <div className="col-7 pe-0 d-flex align-items-center">
+          <div className="col-12 col-sm-7 d-flex align-items-center">
             <div className="detail-text">
               <div className="detail-title mt-2 mb-4">
                 <h2>{movieDetail.title}</h2>
@@ -88,28 +96,33 @@ export default function MovieDetail({ movieId = 0 }) {
             </div>
           ) : (
             <>
-              <div className="d-flex gap-3">
+              <div
+                className={`${styles['has-trailer']} row row-cols-1 row-cols-sm-2 row-cols-md-3`}
+              >
                 {movieDetail.videos?.results
                   ?.filter(
                     (video) =>
                       video.site === 'YouTube' && video.type === 'Trailer'
                   )
                   .map((video) => (
-                    <div key={video.id} className={`${styles['trailer-card']}`}>
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${video.key}`}
-                        title={video.name}
-                        frameBorder="0"
-                        allowFullScreen
-                      ></iframe>
-                    </div>
+                    <>
+                      <div key={video.id} className="col p-2">
+                        <div className={`${styles['trailer-card']}`}>
+                          <iframe
+                            className="w-100 h-100"
+                            src={`https://www.youtube.com/embed/${video.key}`}
+                            title={video.name}
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      </div>
+                    </>
                   ))}
               </div>
             </>
           )}
         </div>
+        <hr className="my-4" />
         <div className="detail-comment">
           <h3 className="mb-3">評論</h3>
           {movieDetail.reviews?.results?.length === 0 ? (

@@ -73,9 +73,28 @@ export default function AppPage() {
     }, 500)
   )
 
+  const searchFormRef = useRef(null)
+  const searchSecRef = useRef(null)
+  const movieDetailRef = useRef(null)
+
   useEffect(() => {
     getNowPlayingMovies()
     getUpComingMovies()
+
+    const handleClickOutside = (e) => {
+      if (
+        !searchFormRef.current?.contains(e.target) &&
+        !searchSecRef.current?.contains(e.target) &&
+        !movieDetailRef.current?.contains(e.target)
+      ) {
+        setSearchFocused(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   return (
@@ -87,13 +106,14 @@ export default function AppPage() {
               <Image
                 src="/images/blue_long_2.svg"
                 alt="logo"
-                width={200}
+                width={230}
                 height={30}
                 // className="object-fit-cover"
               />
             </Link>
           </div>
           <form
+            ref={searchFormRef}
             className="search-form col-md-4 col-12 order-md-2 order-3 d-flex align-items-center p-0 mt-2 mt-md-0"
             onSubmit={(e) => e.preventDefault()}
           >
@@ -108,7 +128,6 @@ export default function AppPage() {
                 debounceRef.current(e.target.value)
               }}
               onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
             />
           </form>
           <div className="col-md-4 col-6 order-md-3 order-2 d-flex justify-content-end align-items-center p-0">
@@ -123,7 +142,10 @@ export default function AppPage() {
             </button>
           </div>
         </div>
-        <div className={`search-sec ${searchFocused ? 'active' : ''}`}>
+        <div
+          ref={searchSecRef}
+          className={`search-sec ${searchFocused ? 'active' : ''}`}
+        >
           <div className="search-result">
             {errorMessage ? (
               <div className="search-no-result">
@@ -146,7 +168,7 @@ export default function AppPage() {
                 <h4>沒有搜尋到任何電影</h4>
               </div>
             ) : (
-              <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-3">
+              <div className="row row-cols-1 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-3">
                 {searchMovies?.map((movie) => (
                   <div key={movie.id} className="col">
                     <MovieCard
@@ -172,11 +194,19 @@ export default function AppPage() {
       </div>
       {selectedMovie && (
         <div
+          ref={movieDetailRef}
           className="movie-detail-overlay"
           onClick={() => setSelectedMovie(null)}
         >
-          <div className="movie-detail-content">
-            <MovieDetail movieId={selectedMovie} />
+          <div
+            // ref={movieDetailRef}
+            className="movie-detail-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MovieDetail
+              movieId={selectedMovie}
+              setSelectedMovie={setSelectedMovie}
+            />
           </div>
         </div>
       )}

@@ -1,6 +1,14 @@
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
 .search-bar {
-  padding: 12px 60px;
+  padding: 16px 60px;
   background-color: var(--background-black);
+  border-bottom: 2px solid var(--grey900);
 
   @media screen and (max-width: 768px) {
     padding: 12px 16px;
@@ -53,7 +61,7 @@
 .search-sec {
   background-color: var(--grey50);
   height: 0vh;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.6);
+  box-shadow: 0px 20px 12px 0px rgba(0, 0, 0, 0.6);
   overflow-y: auto;
   overflow-x: hidden;
   transition: height 0.4s ease-in-out;
@@ -68,8 +76,7 @@
   }
 
   &.active {
-    // 待修改
-    height: calc(100vh - 68px);
+    height: 70vh;
   }
 
   .search-result {
@@ -102,7 +109,6 @@
 }
 
 .movie-detail-content {
-  // position: relative;
   width: 100%;
   max-width: 850px;
   height: 100%;
@@ -120,17 +126,4 @@
   &::-webkit-scrollbar {
     display: none;
   }
-
-  // @media screen and (max-width: 768px) {
-  //   padding: 16px;
-  //   max-height: calc(100vh - 32px);
-  //   border-radius: 0;
-  //   height: auto;
-  //   width: auto;
-  //   max-width: none;
-  //   margin-top: -32px;
-  //   margin-left: -16px;
-  //   margin-right: -16px;
-  //   margin-bottom: -16px;
-  // }
 }

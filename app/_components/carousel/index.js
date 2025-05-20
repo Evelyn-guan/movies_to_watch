@@ -44,7 +44,8 @@ export default function Carousel({ data = {}, setSelectedMovie }) {
             setIsFirstSlide(swiper.isBeginning)
           }}
           breakpoints={{
-            390: { slidesPerView: 2 },
+            390: { slidesPerView: 1 },
+            430: { slidesPerView: 2 },
             576: { slidesPerView: 3 },
             768: { slidesPerView: 4 },
             1200: { slidesPerView: 6 },
