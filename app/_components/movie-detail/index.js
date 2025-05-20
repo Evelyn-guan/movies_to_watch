@@ -28,19 +28,21 @@ export default function MovieDetail({ movieId = 0 }) {
 
   return (
     <>
-      <h1>details</h1>
-      <div className="d-flex">
-        <div>
-          <div className="poster position-relative">
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${movieDetail.poster_path}`}
-              alt={`${movieDetail.title}`}
-              fill
-              className="object-fit-cover"
-            />
-          </div>
-          <div>{movieDetail.title}</div>
+      <div
+        className={`${styles['background']}`}
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${movieDetail.backdrop_path})`,
+        }}
+      >
+        <div className={`${styles['main-image']} position-relative`}>
+          <Image
+            src={`https://image.tmdb.org/t/p/original${movieDetail.poster_path}`}
+            alt={`${movieDetail.title}`}
+            fill
+            className={`${styles['poster-image']} object-fit-cover`}
+          />
         </div>
+        <div>{movieDetail.title}</div>
       </div>
     </>
   )
