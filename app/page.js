@@ -12,7 +12,7 @@ import Carousel from './_components/carousel'
 import MovieDetail from './_components/movie-detail'
 
 export default function AppPage() {
-  const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
+  const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY
   const [nowPlayingMovies, setNowPlayingMovies] = useState([])
   const [upComingMovies, setUpComingMovies] = useState([])
   const [searchName, setSearchName] = useState('')
@@ -196,12 +196,21 @@ export default function AppPage() {
         <div
           ref={movieDetailRef}
           className="movie-detail-overlay"
+          role="button"
+          tabIndex={0}
           onClick={() => setSelectedMovie(null)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setSelectedMovie(null)
+            }
+          }}
         >
           <div
-            // ref={movieDetailRef}
             className="movie-detail-content"
+            role="button"
+            tabIndex={0}
             onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
             <MovieDetail
               movieId={selectedMovie}

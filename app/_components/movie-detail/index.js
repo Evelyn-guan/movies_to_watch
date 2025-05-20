@@ -5,7 +5,7 @@ import styles from './movie-detail.module.scss'
 import Image from 'next/image'
 
 export default function MovieDetail({ movieId = 0, setSelectedMovie }) {
-  const apiKey = 'd0d30ff328b33172be050917d5c40fb2'
+  const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY
 
   const [movieDetail, setMovieDetail] = useState({})
 

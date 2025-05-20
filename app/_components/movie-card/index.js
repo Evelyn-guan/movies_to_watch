@@ -5,7 +5,17 @@ import Image from 'next/image'
 
 export default function MovieCard({ data = {}, setSelectedMovie = () => {} }) {
   return (
-    <div className={`${styles['movie-card']}`} onClick={setSelectedMovie}>
+    <div
+      className={`${styles['movie-card']}`}
+      role="button"
+      tabIndex={0}
+      onClick={setSelectedMovie}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          setSelectedMovie()
+        }
+      }}
+    >
       <div className={`${styles['poster']} position-relative`}>
         <Image
           src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
